@@ -1,118 +1,152 @@
+// Загрузка данных и грамматических правил
+let dictionaryData = null;
+let grammarRules = null;
+
+// Загрузка словаря
 fetch('../data/yakorannian_words.json')
     .then(response => response.json())
     .then(data => {
-        data.words.forEach(word => {
-            document.body.innerHTML += 
-                <div class="word-card">
-                    <h3>${word.word}</h3>
-                    <p>Перевод: ${word.translation}</p>
-                </div>
-            ;
-        });
-    });
-function playAudio(audioPath) {
-  const player = document.getElementById('player');
-  player.src = audioPath;
-  player.play();
-}
-const translations = word.translations.ru.join(" / ");
-function applyGrammarRules(word, context) {
-  if (word.alternate_forms) {
-    for (const form of word.alternate_forms) {
-      if (context[form.condition]) {
-        return form.form;
-      }
-    }
-  }
-  return word.word;
+        dictionaryData = data;
+        initApp();
+    })
+    .catch(error => console.error('Ошибка загрузки словаря:', error));
+
+// Загрузка грамматики (создайте grammar_rules.json)
+fetch('../data/grammar_rules.json')
+    .then(response => response.json())
+    .then(rules => {
+        grammarRules = rules;
+        initApp();
+    })
+    .catch(error => console.error('Ошибка загрузки грамматики:', error));
+
+// Инициализация приложения
+let isInitialized = false;
+function initApp() {
+    if (!dictionaryData || !grammarRules || isInitialized) return;
+    isInitialized = true;
+
+    const searchInput = document.getElementById('search');
+    const contextSelect = document.getElementById('context');
+    const wordsContainer = document.getElementById('words-container');
+
+    // Первоначальная загрузка
+    updateDisplay();
+
+    // Обработчики событий
+    searchInput.addEventListener('input', updateDisplay);
+    contextSelect.addEventListener('change', updateDisplay);
 }
 
-const currentContext = { sentence_type: "question" };
-const displayedWord = applyGrammarRules(wordEntry, currentContext);
-document.getElementById('context').addEventListener('change', updateDisplay);
-
+// Основная функция отображения
 function updateDisplay() {
-  const context = {
-    sentence_type: document.getElementById('context').value
-  };
-  
-  wordsContainer.innerHTML = '';
-  data.words.forEach(word => {
-    const currentForm = applyGrammarRules(word, context);
-    wordsContainer.innerHTML += `
-      <div class="word-card">
-        <h3>${currentForm}</h3>
-        <p>${word.translations.ru.join ? word.translations.ru.join(' / ') : word.translations.ru}</p>
-      </div>
+    if (!dictionaryData) return;
+
+    const searchTerm = document.getElementById('search').value.toLowerCase();
+    const context = {
+        sentence_type: document.getElementById('context').value
+    };
+
+    const wordsContainer = document.getElementById('words-container');
+    wordsContainer.innerHTML = '';
+
+    dictionaryData.words.forEach(wordEntry => {
+        // Применяем фильтры
+        if (!matchesSearch(wordEntry, searchTerm)) return;
+
+        // Применяем грамматические правила
+        const displayedWord = applyGrammarRules(wordEntry, context);
+        
+        // Создаем карточку
+        wordsContainer.innerHTML += createWordCard(displayedWord, wordEntry);
+    });
+}
+
+// Поиск по словам и переводам
+function matchesSearch(word, term) {
+    if (!term) return true;
+    return word.word.toLowerCase().includes(term) || 
+           word.translations.ru.toLowerCase().includes(term);
+}
+
+// Создание HTML карточки
+function createWordCard(wordForm, wordData) {
+    return `
+        <div class="word-card">
+            <h3>${wordForm}</h3>
+            <div class="details">
+                <p class="translation">${formatTranslations(wordData.translations)}</p>
+                ${wordData.pronunciation?.ipa ? 
+                    `<p class="pronunciation">/${wordData.pronunciation.ipa}/</p>` : ''}
+                ${wordData.pronunciation?.audio ? 
+                    `<button class="audio-btn" onclick="playAudio('${wordData.pronunciation.audio}')">▶</button>` : ''}
+            </div>
+        </div>
     `;
-  });
-}
-function declineNoun(word, caseName, number, gender) {
-  const rules = grammarRules.nouns.declensions[caseName][number][gender];
-  const stem = word.stem || word.word.slice(0, -1); // Автовыделение основы
-  
-  if (word.irregular?.[`${caseName}_${number}`]) {
-    return word.irregular[`${caseName}_${number}`];
-  }
-  
-  const ending = rules.find(end => 
-    word.word.endsWith(end.replace(/[-\+]/g, ''))
-    || rules[0];
-  
-  return stem + ending;
 }
 
-
-declineNoun("локко", "genitive", "plural", "masculine"); // → "локкув"
-
-function conjugateVerb(word, person, number) {
-  const pattern = grammarRules.verbs.conjugation_patterns
-    .find(p => p.infinitive_endings.includes(word.infinitive_ending));
-  
-  const stem = word.stem || word.word.slice(0, -pattern.infinitive_endings[0].length);
-  
-  return stem + pattern.endings[number][person];
+// Форматирование переводов
+function formatTranslations(translations) {
+    return Object.entries(translations)
+        .map(([lang, value]) => `${lang.toUpperCase()}: ${Array.isArray(value) ? value.join(', ') : value}`)
+        .join(' • ');
 }
 
-// Пример:
-conjugateVerb("теннтіть", "1st", "singular"); // → "теннто"
+// Грамматические правила
+function applyGrammarRules(word, context) {
+    if (!word.type) return word.word;
 
-function vocative(word) {
-  const lastChar = word.word.slice(-1);
-  const stem = word.stem || word.word.slice(0, -1);
-  
-  if (/[шщчжц]/.test(lastChar)) {
-    return stem + "о";
-  }
-  return word.word + "ұ";
-}
-
-vocative("мағван"); // → "мағванұ"
-vocative("тмітання"); // → "тмітаньви"
-
-function autoDetectStem(word) {
-  const endings = {
-    "іть": 2,
-    "ать": 2,
-    "ть": 1,
-    "ь": 1
-  };
-  
-  for (const [end, cut] of Object.entries(endings)) {
-    if (word.endsWith(end)) {
-      return word.slice(0, -cut);
+    try {
+        switch(word.type) {
+            case 'noun':
+                return declineNoun(word, context);
+            case 'verb':
+                return conjugateVerb(word, context);
+            default:
+                return word.word;
+        }
+    } catch (e) {
+        console.error(`Ошибка в слове ${word.word}:`, e);
+        return word.word;
     }
-  }
-  return word;
 }
 
-const tests = [
-  {input: "локко", case: "genitive", number: "plural", expected: "локкув"},
-  {input: "кашить", person: "3rd", number: "singular", expected: "кашіт"}
-];
+// Склонение существительных
+function declineNoun(word, context) {
+    if (word.irregular?.[`${context.case}_${context.number}`]) {
+        return word.irregular[`${context.case}_${context.number}`];
+    }
 
-if (/(ать|ить)$/.test(word)) { /* ... */ }
-function playAudio(word) {
-  const audio = new Audio(word.pronunciation.audio);
-  audio.play();
+    const declension = grammarRules.noun_declensions[word.declension];
+    const ending = declension[context.case][context.number][word.gender];
+    
+    return (word.stem || word.word.slice(0, -1)) + ending;
+}
+
+// Спряжение глаголов
+function conjugateVerb(word, context) {
+    const conjugation = grammarRules.verb_conjugations[word.conjugation];
+    const ending = conjugation[context.number][context.person];
+    
+    return (word.stem || getVerbStem(word)) + ending;
+}
+
+// Автоопределение основы глагола
+function getVerbStem(word) {
+    for (const [ending, cut] of Object.entries(grammarRules.verb_endings)) {
+        if (word.word.endsWith(ending)) {
+            return word.word.slice(0, -cut);
+        }
+    }
+    return word.word;
+}
+
+// Воспроизведение аудио
+function playAudio(audioPath) {
+    try {
+        const audio = new Audio(audioPath);
+        audio.play().catch(e => console.error('Ошибка воспроизведения:', e));
+    } catch (e) {
+        console.error('Некорректный путь к аудио:', audioPath);
+    }
 }
