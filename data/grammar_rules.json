@@ -19,3 +19,91 @@
         "ть": 1
     }
 }
+{
+  "noun_declensions": {
+    "nominative": {
+      "singular": {
+        "masculine": ["", "а", "я", "о", "е"],
+        "feminine": ["а", "я", "о", "е"]
+      },
+      "plural": {
+        "masculine": ["и"],
+        "feminine": ["і"]
+      }
+    },
+    "genitive": {
+      "singular": {
+        "masculine": ["у"],
+        "feminine": ["і", "я"]
+      },
+      "plural": {
+        "masculine": ["ув"],
+        "feminine": ["ів"]
+      }
+    },
+    "dative": {
+      "singular": {
+        "masculine": ["а"],
+        "feminine": ["и"]
+      },
+      "plural": {
+        "masculine": ["ау"],
+        "feminine": ["үу", "иу", "яу"]
+      }
+    },
+    "accusative": {
+      "singular": {
+        "masculine": ["о"],
+        "feminine": ["ү"]
+      },
+      "plural": {
+        "masculine": ["оу"],
+        "feminine": ["үу"]
+      }
+    },
+    "instrumental": {
+      "singular": {
+        "masculine": ["әм"],
+        "feminine": ["үн", "ен", "ем"]
+      },
+      "plural": {
+        "masculine": ["әмі"],
+        "feminine": ["үні", "ені", "емі"]
+      }
+    },
+    "prepositional": {
+      "singular": {
+        "masculine": ["ет"],
+        "feminine": ["іт"]
+      },
+      "plural": {
+        "masculine": ["етах", "әтах"],
+        "feminine": ["ітах", "ях"]
+      }
+    },
+    "locative": {
+      "singular": {
+        "masculine": ["ету"],
+        "feminine": ["іву", "іви"]
+      },
+      "plural": {
+        "masculine": ["етув"],
+        "feminine": ["увув"]
+      }
+    },
+    "vocative": {
+      "singular": {
+        "default": ["ұ"],
+        "after_sibilant": ["о"]
+      },
+      "plural": {
+        "default": ["ұі"],
+        "tsya_ending": ["іі"],
+        "nnya_ending": ["ьви"]
+      }
+    },
+    "partitive": {
+      "base_form": ["а"]
+    }
+  }
+}
