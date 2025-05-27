@@ -150,3 +150,71 @@ function playAudio(audioPath) {
         console.error('Некорректный путь к аудио:', audioPath);
     }
 }
+function declineNoun(word, caseName, number, gender, context) {
+  // Проверка исключений
+  if (word.irregular?.[`${caseName}_${number}`]) {
+    return word.irregular[`${caseName}_${number}`];
+  }
+
+  const declension = grammarRules.noun_declensions[caseName];
+  const stem = word.stem || getNounStem(word.word, gender);
+  
+  // Особые правила для звательного падежа
+  if (caseName === 'vocative') {
+    return handleVocative(word.word, stem, number);
+  }
+
+  // Обработка разделительного падежа
+  if (caseName === 'partitive') {
+    return stem + grammarRules.noun_declensions.partitive.base_form[0];
+  }
+
+  // Общий алгоритм для остальных падежей
+  const endings = declension[number][gender];
+  const ending = getCorrectEnding(word.word, endings, gender);
+  
+  return stem + ending;
+}
+
+// Вспомогательные функции
+function getNounStem(word, gender) {
+  const endings = grammarRules.noun_declensions.nominative.singular[gender];
+  for (const end of endings) {
+    if (word.endsWith(end)) {
+      return word.slice(0, -end.length);
+    }
+  }
+  return word;
+}
+
+function handleVocative(word, stem, number) {
+  if (number === 'plural') {
+    if (word.endsWith('ця')) return stem.slice(0, -2) + 'іі';
+    if (word.endsWith('ння')) return stem.slice(0, -3) + 'ьви';
+    return stem + 'ұі';
+  }
+  
+  const lastChar = word.slice(-1);
+  const sibilants = ['ш', 'щ', 'ч', 'ж', 'ц'];
+  return sibilants.includes(lastChar) 
+    ? stem + 'о' 
+    : stem + 'ұ';
+}
+
+function getCorrectEnding(word, endings, gender) {
+  // Логика выбора окончания на основе последних букв слова
+  const specialCases = {
+    'а': ['а'],
+    'я': ['я'],
+    'о': ['о'],
+    'е': ['е']
+  };
+  
+  for (const [char, possibleEndings] of Object.entries(specialCases)) {
+    if (endings.some(end => possibleEndings.includes(end))) {
+      if (word.endsWith(char)) return endings[0];
+    }
+  }
+  
+  return endings[0];
+}
