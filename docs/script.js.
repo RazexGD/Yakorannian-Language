@@ -37,6 +37,86 @@ function initApp() {
     searchInput.addEventListener('input', updateDisplay);
     contextSelect.addEventListener('change', updateDisplay);
 }
+function applyGrammarRules(word, context) {
+  if (!word.type) return word.word;
+
+  try {
+    switch(word.type.toLowerCase()) {
+      case 'noun': // Для существительных
+        return declineNoun(
+          word,
+          context.case, // Падеж из контекста (nominative, genitive и т.д.)
+          context.number, // Число (singular/plural)
+          word.gender, // Род (masculine/feminine)
+          context // Дополнительный контекст
+        );
+
+      case 'verb': // Для глаголов
+        return conjugateVerb(
+          word,
+          context.tense, // Время (past, present, future)
+          context.person, // Лицо (1st, 2nd, 3rd)
+          context.number, // Число
+          context.aspect // Вид (perfective/imperfective)
+        );
+
+      case 'adjective': // Для прилагательных
+        return declineAdjective(
+          word,
+          context.case,
+          context.number,
+          context.gender,
+          context.degree // Степень сравнения (positive, comparative)
+        );
+
+      case 'pronoun': // Для местоимений
+        return declinePronoun(
+          word,
+          context.case,
+          context.number,
+          context.person
+        );
+
+      case 'numeral': // Для числительных
+        return declineNumeral(
+          word,
+          context.case,
+          context.number,
+          context.form // Форма (cardinal, ordinal)
+        );
+
+      default: // Для неизменяемых частей речи
+        return word.word;
+    }
+  } catch (e) {
+    console.error(Грамматическая ошибка в слове "${word.word}":, e);
+    return word.word; // Возвращаем базовую форму при ошибке
+  }
+}
+// Глаголы
+function conjugateVerb(word, tense, person, number, aspect) {
+  const pattern = grammarRules.verb_conjugations[word.conjugation];
+  const stem = word.stem || getVerbStem(word.word);
+  return stem + pattern[tense][aspect][number][person];
+}
+
+// Прилагательные
+function declineAdjective(word, caseName, number, gender, degree) {
+  const declension = grammarRules.adjective_declensions[degree];
+  return word.stem + declension[caseName][number][gender];
+}
+
+// Местоимения
+function declinePronoun(word, caseName, number, person) {
+  const paradigm = grammarRules.pronoun_paradigms[word.subtype];
+  return paradigm[person][number][caseName];
+}
+
+// Числительные
+function declineNumeral(word, caseName, number, form) {
+  const rules = grammarRules.numeral_declensions[form];
+  return word.stem + rules[caseName][number];
+}
 
 // Основная функция отображения
 function updateDisplay() {
