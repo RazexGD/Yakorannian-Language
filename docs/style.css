@@ -7,3 +7,31 @@ body {
     padding: 10px;
     margin: 10px 0;
 }
+/* Базовая стилизация */
+.words-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.word-card {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.pronunciation {
+  color: #6c757d;
+  font-style: italic;
+}
+
+.audio-btn {
+  background: #4CAF50;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  color: white;
+}
