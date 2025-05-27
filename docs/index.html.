@@ -8,10 +8,10 @@
 </body>
 </html>
 <head>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="/Yakorannian-Language/docs/style.css">
 </head>
 <body>
-    <script src="script.js"></script>
+    <script src="/Yakorannian-Language/docs/script.js"></script>
 </body>
 <audio id="player" controls>
   <source src="" type="audio/mpeg">
