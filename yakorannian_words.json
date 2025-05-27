@@ -1,21 +1,11 @@
 {
-  "words": [
-    {
-      "word": "Lumos",
-      "translation": "Свет",
-      "part_of_speech": "глагол"
-    }
-  ]
-}
-{
-  "words": [
-    {
-      "word": "Полла",
-      "translation": "Привет"
-    },
-    {
-      "word": "Ғәнко",
-      "translation": "Пока"
-    }
-  ]
+  "word": "майбі",
+  "translations": {
+    "ru": ["мой", "моя", "моё", "мои"],
+    "en": "my"
+  },
+  "grammar": {
+    "type": "possessive_pronoun",
+    "gender_neutral": true
+  }
 }
