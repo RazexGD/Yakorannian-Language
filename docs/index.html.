@@ -1,22 +1,31 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
-    <title>Словарь конланга</title>
+    <meta charset="UTF-8">
+    <title>Якоранный словарь</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Добро пожаловать в словарь!</h1>
+    <header>
+        <h1>Словарь Якоранного языка</h1>
+    </header>
+    
+    <main>
+        <div class="controls">
+            <input type="text" id="search" placeholder="Поиск слова...">
+            <select id="context">
+                <option value="statement">Повествование</option>
+                <option value="question">Вопрос</option>
+            </select>
+        </div>
+        
+        <div id="words-container"></div>
+        
+        <audio id="player" hidden>
+            <source src="" type="audio/mpeg">
+        </audio>
+    </main>
+
+    <script src="script.js"></script>
 </body>
 </html>
-<head>
-    <link rel="stylesheet" href="/Yakorannian-Language/docs/style.css">
-</head>
-<body>
-    <script src="/Yakorannian-Language/docs/script.js"></script>
-</body>
-<audio id="player" controls>
-  <source src="" type="audio/mpeg">
-</audio>
-<select id="context">
-  <option value="statement">Повествование</option>
-  <option value="question">Вопрос</option>
-</select>
