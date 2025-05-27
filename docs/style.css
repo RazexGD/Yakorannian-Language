@@ -35,3 +35,12 @@ body {
   cursor: pointer;
   color: white;
 }
+@media (max-width: 600px) {
+  .words-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .controls {
+    flex-direction: column;
+  }
+}
