@@ -4,8 +4,38 @@
     "ru": ["мой", "моя", "моё", "мои"],
     "en": "my"
   },
+  "ipa": "'majbi"
+  "audio": "../audio/majbi.mp3"
   "grammar": {
     "type": "possessive_pronoun",
     "gender_neutral": true
   }
+}
+{
+    "words": [
+        {
+            "word": "Полла",
+            "type": "noun",
+            "gender": "masculine",
+            "declension": "class_1",
+            "translations": {"ru": "Привет"
+            "en": "hi"},
+            "pronunciation": {
+                "ipa": "pol.la",
+                "audio": "../audio/polla.mp3"
+            }
+        }
+  {
+            "word": "Ғәнко",
+            "type": "noun",
+            "gender": "masculine",
+            "declension": "class_1",
+            "translations": {"ru": "Пока"
+            "en": "bye"},
+            "pronunciation": {
+                "ipa": "'ghenka",
+                "audio": "../audio/ghenka.mp3"
+            }
+  }
+    ]
 }
