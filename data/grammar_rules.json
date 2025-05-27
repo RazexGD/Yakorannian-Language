@@ -1,0 +1,21 @@
+{
+    "noun_declensions": {
+        "class_1": {
+            "nominative": {
+                "singular": {"masculine": "", "feminine": "а"},
+                "plural": {"masculine": "и", "feminine": "і"}
+            }
+        }
+    },
+    "verb_conjugations": {
+        "class_1": {
+            "singular": {"1st": "о", "2nd": "іш", "3rd": "іт"},
+            "plural": {"1st": "ім", "2nd": "іте", "3rd": "ят"}
+        }
+    },
+    "verb_endings": {
+        "іть": 3,
+        "ать": 2,
+        "ть": 1
+    }
+}
