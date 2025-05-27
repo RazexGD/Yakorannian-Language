@@ -10,3 +10,40 @@ fetch('../data/yakorannian_words.json')
             ;
         });
     });
+function playAudio(audioPath) {
+  const player = document.getElementById('player');
+  player.src = audioPath;
+  player.play();
+}
+const translations = word.translations.ru.join(" / ");
+function applyGrammarRules(word, context) {
+  if (word.alternate_forms) {
+    for (const form of word.alternate_forms) {
+      if (context[form.condition]) {
+        return form.form;
+      }
+    }
+  }
+  return word.word;
+}
+
+const currentContext = { sentence_type: "question" };
+const displayedWord = applyGrammarRules(wordEntry, currentContext);
+document.getElementById('context').addEventListener('change', updateDisplay);
+
+function updateDisplay() {
+  const context = {
+    sentence_type: document.getElementById('context').value
+  };
+  
+  wordsContainer.innerHTML = '';
+  data.words.forEach(word => {
+    const currentForm = applyGrammarRules(word, context);
+    wordsContainer.innerHTML += `
+      <div class="word-card">
+        <h3>${currentForm}</h3>
+        <p>${word.translations.ru.join ? word.translations.ru.join(' / ') : word.translations.ru}</p>
+      </div>
+    `;
+  });
+}
