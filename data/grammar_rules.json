@@ -9,7 +9,7 @@
     },
     "verb_conjugations": {
         "class_1": {
-            "singular": {"1st": "о", "2nd": "іш", "3rd": "іт"},
+            "singular": {"1st": "о", "2nd": "ішь", "3rd": "іт"},
             "plural": {"1st": "ім", "2nd": "іте", "3rd": "ят"}
         }
     },
