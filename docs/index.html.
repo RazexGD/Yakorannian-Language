@@ -13,3 +13,10 @@
 <body>
     <script src="script.js"></script>
 </body>
+<audio id="player" controls>
+  <source src="" type="audio/mpeg">
+</audio>
+<select id="context">
+  <option value="statement">Повествование</option>
+  <option value="question">Вопрос</option>
+</select>
