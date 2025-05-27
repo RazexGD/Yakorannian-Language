@@ -112,3 +112,7 @@ const tests = [
 ];
 
 if (/(ать|ить)$/.test(word)) { /* ... */ }
+function playAudio(word) {
+  const audio = new Audio(word.pronunciation.audio);
+  audio.play();
+}
