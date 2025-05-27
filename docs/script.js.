@@ -47,3 +47,68 @@ function updateDisplay() {
     `;
   });
 }
+function declineNoun(word, caseName, number, gender) {
+  const rules = grammarRules.nouns.declensions[caseName][number][gender];
+  const stem = word.stem || word.word.slice(0, -1); // Автовыделение основы
+  
+  if (word.irregular?.[`${caseName}_${number}`]) {
+    return word.irregular[`${caseName}_${number}`];
+  }
+  
+  const ending = rules.find(end => 
+    word.word.endsWith(end.replace(/[-\+]/g, ''))
+    || rules[0];
+  
+  return stem + ending;
+}
+
+
+declineNoun("локко", "genitive", "plural", "masculine"); // → "локкув"
+
+function conjugateVerb(word, person, number) {
+  const pattern = grammarRules.verbs.conjugation_patterns
+    .find(p => p.infinitive_endings.includes(word.infinitive_ending));
+  
+  const stem = word.stem || word.word.slice(0, -pattern.infinitive_endings[0].length);
+  
+  return stem + pattern.endings[number][person];
+}
+
+// Пример:
+conjugateVerb("теннтіть", "1st", "singular"); // → "теннто"
+
+function vocative(word) {
+  const lastChar = word.word.slice(-1);
+  const stem = word.stem || word.word.slice(0, -1);
+  
+  if (/[шщчжц]/.test(lastChar)) {
+    return stem + "о";
+  }
+  return word.word + "ұ";
+}
+
+vocative("мағван"); // → "мағванұ"
+vocative("тмітання"); // → "тмітаньви"
+
+function autoDetectStem(word) {
+  const endings = {
+    "іть": 2,
+    "ать": 2,
+    "ть": 1,
+    "ь": 1
+  };
+  
+  for (const [end, cut] of Object.entries(endings)) {
+    if (word.endsWith(end)) {
+      return word.slice(0, -cut);
+    }
+  }
+  return word;
+}
+
+const tests = [
+  {input: "локко", case: "genitive", number: "plural", expected: "локкув"},
+  {input: "кашить", person: "3rd", number: "singular", expected: "кашіт"}
+];
+
+if (/(ать|ить)$/.test(word)) { /* ... */ }
